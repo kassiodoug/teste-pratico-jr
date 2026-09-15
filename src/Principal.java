@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -24,6 +25,10 @@ public class Principal {
     agrupaFuncionarios(funcionarios, "funcao", funcionariosAgrupados);
     exibeFuncionariosAgrupados(funcionariosAgrupados);
     exibeAniversariantesPorMeses(funcionarios, new int[] { 10, 12 });
+
+    Funcionario funcionarioComMaiorIdade = buscaFuncionarioMaiorIdade(funcionarios);
+    System.out.println(String.format("Funcionário(a) com a maior idade: %s (%d anos).",
+        funcionarioComMaiorIdade.getNome(), funcionarioComMaiorIdade.getIdade()));
 
     System.out.println(funcionarios.size());
   }
@@ -103,5 +108,11 @@ public class Principal {
         }
       }
     }
+  }
+
+  private static Funcionario buscaFuncionarioMaiorIdade(List<Funcionario> funcionarios) {
+    return funcionarios.stream()
+        .min(Comparator.comparing(Funcionario::getDataNascimento))
+        .orElse(null);
   }
 }
