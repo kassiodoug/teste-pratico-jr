@@ -30,6 +30,9 @@ public class Principal {
     System.out.println(String.format("Funcionário(a) com a maior idade: %s (%d anos).",
         funcionarioComMaiorIdade.getNome(), funcionarioComMaiorIdade.getIdade()));
 
+    funcionariosOrdemPorNome(funcionarios);
+    System.out.println(funcionarios);
+
     System.out.println(funcionarios.size());
   }
 
@@ -114,5 +117,9 @@ public class Principal {
     return funcionarios.stream()
         .min(Comparator.comparing(Funcionario::getDataNascimento))
         .orElse(null);
+  }
+
+  private static void funcionariosOrdemPorNome(List<Funcionario> funcionarios) {
+    funcionarios.sort(Comparator.comparing(Funcionario::getNome, String.CASE_INSENSITIVE_ORDER));
   }
 }
