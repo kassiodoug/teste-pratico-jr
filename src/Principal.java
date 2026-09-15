@@ -1,6 +1,5 @@
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -8,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import utils.FormataData;
 import utils.FormataNumeroBr;
 
 public class Principal {
@@ -43,10 +43,8 @@ public class Principal {
 
   private static void exibeInformacoesFuncionarios(List<Funcionario> funcionarios) {
     funcionarios.forEach(funcionario -> {
-      DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-
       String nome = funcionario.getNome();
-      String dataNascimento = funcionario.getDataNascimento().format(formatter);
+      String dataNascimento = FormataData.format(funcionario.getDataNascimento(), "dd/MM/yyyy");
       String salario = FormataNumeroBr.format(funcionario.getSalario());
       String funcao = funcionario.getFuncao();
 
