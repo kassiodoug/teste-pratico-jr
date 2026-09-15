@@ -15,12 +15,14 @@ import java.util.stream.Collectors;
 public class Principal {
   public static void main(String[] args) {
     List<Funcionario> funcionarios = new ArrayList<>();
+    Map<String, List<Funcionario>> funcionariosAgrupados = new HashMap<>();
 
     funcionarios.addAll(adicionarFuncionarios());
     removeFuncionarioPorNome("João", funcionarios);
     exibeInformacoesFuncionarios(funcionarios);
     aumentoSalarioFuncionario(funcionarios, new BigDecimal(10));
-    agrupaFuncionarios(funcionarios, "funcao");
+    agrupaFuncionarios(funcionarios, "funcao", funcionariosAgrupados);
+    exibeFuncionariosAgrupados(funcionariosAgrupados);
 
     System.out.println(funcionarios.size());
   }
@@ -69,10 +71,23 @@ public class Principal {
     });
   }
 
-  private static void agrupaFuncionarios(List<Funcionario> funcionarios, String chaveAgrupamento) {
-    Map<String, List<Funcionario>> funcionariosAgrupados = funcionarios.stream()
+  private static void agrupaFuncionarios(List<Funcionario> funcionarios, String chaveAgrupamento,
+      Map<String, List<Funcionario>> funcionariosAgrupados) {
+    Map<String, List<Funcionario>> agrupados = funcionarios.stream()
         .collect(Collectors.groupingBy(Funcionario::getFuncao));
 
-    System.out.println(funcionariosAgrupados);
+    funcionariosAgrupados.putAll(agrupados);
+  }
+
+  private static void exibeFuncionariosAgrupados(Map<String, List<Funcionario>> funcionariosAgrupados) {
+    funcionariosAgrupados.forEach((grupo, funcionarios) -> {
+      System.out.println(grupo);
+
+      funcionarios.forEach(funcionario -> {
+        System.out.println(String.format("%s", funcionario.getNome()));
+      });
+
+      System.out.println();
+    });
   }
 }
