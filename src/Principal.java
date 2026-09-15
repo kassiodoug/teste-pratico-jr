@@ -16,6 +16,10 @@ public class Principal {
     Map<String, List<Funcionario>> funcionariosAgrupados = new HashMap<>();
 
     funcionarios.addAll(adicionarFuncionarios());
+
+    // Tabela inicial com todos os funcionários
+    exibeTabelaFuncionarios(funcionarios);
+
     removeFuncionarioPorNome("João", funcionarios);
     exibeInformacoesFuncionarios(funcionarios);
     aumentoSalarioFuncionario(funcionarios, new BigDecimal(10));
@@ -31,6 +35,23 @@ public class Principal {
     System.out.println(funcionarios);
 
     System.out.println(funcionarios.size());
+
+  }
+
+  public static void exibeTabelaFuncionarios(List<Funcionario> funcionarios) {
+    System.out.printf("+--------------------+--------------------+----------------+----------------+%n");
+    System.out.printf("| Nome               | Data Nascimento    | Salário        | Função         |%n");
+    System.out.printf("+--------------------+--------------------+----------------+----------------+%n");
+
+    for (Funcionario f : funcionarios) {
+      System.out.printf("| %-18s | %-18s | %-14s | %-14s |%n",
+          f.getNome(),
+          f.getDataNascimento(),
+          f.getSalario(),
+          f.getFuncao());
+    }
+
+    System.out.printf("+--------------------+--------------------+----------------+----------------+%n");
   }
 
   private static List<Funcionario> adicionarFuncionarios() {
