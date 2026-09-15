@@ -1,17 +1,14 @@
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import utils.FormataNumeroBr;
 
 public class Principal {
   public static void main(String[] args) {
@@ -48,14 +45,9 @@ public class Principal {
     funcionarios.forEach(funcionario -> {
       DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-      DecimalFormatSymbols symbols = new DecimalFormatSymbols(new Locale("pt", "BR"));
-      symbols.setDecimalSeparator(',');
-      symbols.setGroupingSeparator('.');
-      DecimalFormat df = new DecimalFormat("###,###,##0.00", symbols);
-
       String nome = funcionario.getNome();
       String dataNascimento = funcionario.getDataNascimento().format(formatter);
-      String salario = df.format(funcionario.getSalario());
+      String salario = FormataNumeroBr.format(funcionario.getSalario());
       String funcao = funcionario.getFuncao();
 
       System.out.println(String.format("%s e %s | %s", nome, dataNascimento, salario));
