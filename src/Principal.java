@@ -23,6 +23,7 @@ public class Principal {
     aumentoSalarioFuncionario(funcionarios, new BigDecimal(10));
     agrupaFuncionarios(funcionarios, "funcao", funcionariosAgrupados);
     exibeFuncionariosAgrupados(funcionariosAgrupados);
+    exibeAniversariantesPorMeses(funcionarios, new int[] { 10, 12 });
 
     System.out.println(funcionarios.size());
   }
@@ -89,5 +90,18 @@ public class Principal {
 
       System.out.println();
     });
+  }
+
+  private static void exibeAniversariantesPorMeses(List<Funcionario> funcionarios, int[] meses) {
+    for (Funcionario funcionario : funcionarios) {
+      int mesNascimento = funcionario.getDataNascimento().getMonthValue();
+
+      for (int mes : meses) {
+        if (mesNascimento == mes) {
+          System.out.println(funcionario.getNome());
+          break;
+        }
+      }
+    }
   }
 }
