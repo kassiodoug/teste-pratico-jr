@@ -8,7 +8,7 @@ import java.util.Locale;
 public class FormataNumeroBr {
   public static String format(BigDecimal valor) {
 
-    DecimalFormatSymbols symbols = new DecimalFormatSymbols(new Locale("pt", "BR"));
+    DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.forLanguageTag("pt-BR"));
     symbols.setDecimalSeparator(',');
     symbols.setGroupingSeparator('.');
     DecimalFormat df = new DecimalFormat("###,###,##0.00", symbols);

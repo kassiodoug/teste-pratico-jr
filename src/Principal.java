@@ -11,34 +11,63 @@ import utils.FormataData;
 import utils.FormataNumeroBr;
 
 public class Principal {
+  public static BigDecimal salarioMinimo;
+
   public static void main(String[] args) {
     List<Funcionario> funcionarios = new ArrayList<>();
     Map<String, List<Funcionario>> funcionariosAgrupados = new HashMap<>();
 
     funcionarios.addAll(adicionarFuncionarios());
 
-    // Tabela inicial com todos os funcionários
+    System.out.println("3.1 - Tabela inicial com todos os funcionários.");
     exibeTabelaFuncionarios(funcionarios);
 
+    System.out.println("3.2 - Tabela de funcionários sem o funcionário João.");
     removeFuncionarioPorNome("João", funcionarios);
+    exibeTabelaFuncionarios(funcionarios);
+
+    System.out.println("3.3 - Funcionários com dados formatados.");
     exibeInformacoesFuncionarios(funcionarios);
+
+    System.out.println("3.4 - Funcionários com 10% de aumento nos salários.");
     aumentoSalarioFuncionario(funcionarios, new BigDecimal(10));
+    exibeInformacoesFuncionarios(funcionarios);
+
+    System.out.println("3.5 Funcionários agrupados por função.");
     agrupaFuncionarios(funcionarios, "funcao", funcionariosAgrupados);
-    exibeFuncionariosAgrupados(funcionariosAgrupados);
+
+    System.out.println("3.6 - Exibição dos funcionários agrupados por função.");
+    funcionariosAgrupados.forEach((funcao, f) -> {
+      System.out.println(funcao);
+      exibeInformacoesFuncionarios(f);
+    });
+
+    System.out.println("3.8 - Funcionários que fazem aniversário nos meses 10 e 12.");
     exibeAniversariantesPorMeses(funcionarios, new int[] { 10, 12 });
 
+    System.out.println("3.9 - Funcionário com a maior idade.");
     Funcionario funcionarioComMaiorIdade = buscaFuncionarioMaiorIdade(funcionarios);
-    System.out.println(String.format("Funcionário(a) com a maior idade: %s (%d anos).",
+    System.out.println(String.format("Funcionário(a) com a maior idade: %s (%d anos).\n",
         funcionarioComMaiorIdade.getNome(), funcionarioComMaiorIdade.getIdade()));
 
+    System.out.println("3.10 - Lista de funcionários em ordem alfabética.");
     funcionariosOrdemPorNome(funcionarios);
-    System.out.println(funcionarios);
+    exibeInformacoesFuncionarios(funcionarios);
 
-    System.out.println(funcionarios.size());
+    System.out.print("3.11 - Total dos salários dos funcionários: ");
+    BigDecimal somaTotalSalatios = totalSalarios(funcionarios);
+    System.out.println(FormataNumeroBr.format(somaTotalSalatios));
 
+    System.out.println("\n3.12 - Quantos salários mínimos cada funcionário recebe.");
+    setSalarioMinimo(new BigDecimal("1212.0"));
+    exibeQteSalariosMinimos(funcionarios);
   }
 
-  public static void exibeTabelaFuncionarios(List<Funcionario> funcionarios) {
+  static void setSalarioMinimo(BigDecimal valor) {
+    salarioMinimo = valor;
+  }
+
+  static void exibeTabelaFuncionarios(List<Funcionario> funcionarios) {
     System.out.printf("+--------------------+--------------------+----------------+----------------+%n");
     System.out.printf("| Nome               | Data Nascimento    | Salário        | Função         |%n");
     System.out.printf("+--------------------+--------------------+----------------+----------------+%n");
@@ -51,29 +80,37 @@ public class Principal {
           f.getFuncao());
     }
 
-    System.out.printf("+--------------------+--------------------+----------------+----------------+%n");
+    System.out.printf("+--------------------+--------------------+----------------+----------------+%n\n");
   }
 
-  private static List<Funcionario> adicionarFuncionarios() {
+  static List<Funcionario> adicionarFuncionarios() {
     return DadosFuncionarios.obterFuncionarios();
   }
 
-  private static void removeFuncionarioPorNome(String nome, List<Funcionario> funcionarios) {
+  static void removeFuncionarioPorNome(String nome, List<Funcionario> funcionarios) {
     funcionarios.removeIf(funcionario -> funcionario.getNome().equals(nome));
   }
 
-  private static void exibeInformacoesFuncionarios(List<Funcionario> funcionarios) {
+  static void exibeInformacoesFuncionarios(List<Funcionario> funcionarios) {
+    System.out.printf("+--------------------+--------------------+----------------+----------------+%n");
+    System.out.printf("| Nome               | Data Nascimento    | Salário        | Função         |%n");
+    System.out.printf("+--------------------+--------------------+----------------+----------------+%n");
+
     funcionarios.forEach(funcionario -> {
-      String nome = funcionario.getNome();
       String dataNascimento = FormataData.format(funcionario.getDataNascimento(), "dd/MM/yyyy");
       String salario = FormataNumeroBr.format(funcionario.getSalario());
-      String funcao = funcionario.getFuncao();
 
-      System.out.println(String.format("%s e %s | %s", nome, dataNascimento, salario));
+      System.out.printf("| %-18s | %-18s | %-14s | %-14s |%n",
+          funcionario.getNome(),
+          dataNascimento,
+          salario,
+          funcionario.getFuncao());
     });
+
+    System.out.printf("+--------------------+--------------------+----------------+----------------+%n\n");
   }
 
-  private static void aumentoSalarioFuncionario(List<Funcionario> funcionarios, BigDecimal porcentagem) {
+  static void aumentoSalarioFuncionario(List<Funcionario> funcionarios, BigDecimal porcentagem) {
     if (porcentagem.compareTo(BigDecimal.ZERO) < 0) {
       throw new Error("A porcentagem deve ser um número positivo.");
     }
@@ -91,7 +128,8 @@ public class Principal {
     });
   }
 
-  private static void agrupaFuncionarios(List<Funcionario> funcionarios, String chaveAgrupamento,
+  static void agrupaFuncionarios(List<Funcionario> funcionarios,
+      String chaveAgrupamento,
       Map<String, List<Funcionario>> funcionariosAgrupados) {
     Map<String, List<Funcionario>> agrupados = funcionarios.stream()
         .collect(Collectors.groupingBy(Funcionario::getFuncao));
@@ -99,38 +137,57 @@ public class Principal {
     funcionariosAgrupados.putAll(agrupados);
   }
 
-  private static void exibeFuncionariosAgrupados(Map<String, List<Funcionario>> funcionariosAgrupados) {
-    funcionariosAgrupados.forEach((grupo, funcionarios) -> {
-      System.out.println(grupo);
+  static void exibeAniversariantesPorMeses(List<Funcionario> funcionarios, int[] meses) {
+    List<Funcionario> funcionariosAniversariantes = new ArrayList<>();
 
-      funcionarios.forEach(funcionario -> {
-        System.out.println(String.format("%s", funcionario.getNome()));
-      });
-
-      System.out.println();
-    });
-  }
-
-  private static void exibeAniversariantesPorMeses(List<Funcionario> funcionarios, int[] meses) {
     for (Funcionario funcionario : funcionarios) {
       int mesNascimento = funcionario.getDataNascimento().getMonthValue();
 
       for (int mes : meses) {
         if (mesNascimento == mes) {
-          System.out.println(funcionario.getNome());
+          funcionariosAniversariantes.add(funcionario);
           break;
         }
       }
     }
+
+    if (funcionariosAniversariantes.size() == 0) {
+      System.out.println("Não há nenhum funcionário aniversariante nos meses fornecidos.");
+      return;
+    }
+
+    exibeTabelaFuncionarios(funcionariosAniversariantes);
   }
 
-  private static Funcionario buscaFuncionarioMaiorIdade(List<Funcionario> funcionarios) {
+  static Funcionario buscaFuncionarioMaiorIdade(List<Funcionario> funcionarios) {
     return funcionarios.stream()
         .min(Comparator.comparing(Funcionario::getDataNascimento))
         .orElse(null);
   }
 
-  private static void funcionariosOrdemPorNome(List<Funcionario> funcionarios) {
+  static void funcionariosOrdemPorNome(List<Funcionario> funcionarios) {
     funcionarios.sort(Comparator.comparing(Funcionario::getNome, String.CASE_INSENSITIVE_ORDER));
+  }
+
+  static BigDecimal totalSalarios(List<Funcionario> funcionarios) {
+    return funcionarios.stream()
+        .map(Funcionario::getSalario)
+        .reduce(BigDecimal.ZERO, BigDecimal::add);
+  }
+
+  static void exibeQteSalariosMinimos(List<Funcionario> funcionarios) {
+    System.out.printf("+--------------------+------------------------------------+%n");
+    System.out.printf("| Nome               | Qte de salários mínimos que recebe |%n");
+    System.out.printf("+--------------------+------------------------------------+%n");
+
+    funcionarios.forEach(funcionario -> {
+      BigDecimal qteSalarios = funcionario.getSalario().divide(salarioMinimo, 2, RoundingMode.HALF_UP);
+
+      System.out.printf("| %-18s | %-34s |%n",
+          funcionario.getNome(),
+          FormataNumeroBr.format(qteSalarios));
+    });
+
+    System.out.printf("+--------------------+------------------------------------+%n");
   }
 }
